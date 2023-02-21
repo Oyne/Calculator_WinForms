@@ -116,13 +116,14 @@ namespace Calculator
         {
             Double tmpValue = Double.Parse(MainTextBox.Text + ((Button)sender).Text);
 
+            // Adding one digit after coma.
             if (MainTextBox.Text.Contains(",") && MainTextBox.Text.IndexOf(",") == MainTextBox.TextLength - 1)
                 MainTextBox.Text = MainTextBox.Text + ((Button)sender).Text;
-
+            // Adding digit if final value is in limits.
             else if (!MainTextBox.Text.Contains(",") && (MainTextBox.Text != "0" && sign == "" && tmpValue < 5000000
                         || MainTextBox.Text != "0" && sign == "-" && tmpValue > -3000000))
                 MainTextBox.Text = MainTextBox.Text + ((Button)sender).Text;
-
+            // Changing default value to digit
             else if (MainTextBox.Text == "0")
                 MainTextBox.Text = ((Button)sender).Text;
         }
