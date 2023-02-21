@@ -1,3 +1,3 @@
 # Calculator project made by using C# and WinForms
 
-![Calculator_rPHwqBzmcW](https://user-images.githubusercontent.com/91478447/220346567-7866451e-9440-4506-8ae1-6438b5e360f5.png)
+![Calculator_15nG9cMxnJ](https://user-images.githubusercontent.com/91478447/220352802-2a89399a-d12b-4c3c-bf13-05d5b4d368a7.png)
