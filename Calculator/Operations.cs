@@ -8,25 +8,30 @@ using System.Windows.Forms;
 
 namespace Calculator
 {
+    /// <summary>
+    /// Two digits class
+    /// </summary>
     class Digits
     {
-        private double _a = 0; //Variable for first digit
-        private double _b = 0; //Variable for second digit
+        // Variable for first digit.
+        private double _a = 0; 
+        // Variable for second digit.
+        private double _b = 0; 
 
         /// <summary>
-        /// Property for first digit
+        /// Property for first digit.
         /// </summary>
         public double ValueOfA
         { get { return _a; } set { _a = value; } }
 
         /// <summary>
-        /// Property for second digit
+        /// Property for second digit.
         /// </summary>
         public double ValueOfB
         { get { return _b; } set { _b = value; } }
 
         /// <summary>
-        /// Method that clears value of digits
+        /// Method that clears value of digits.
         /// </summary>
         public void Clear()
         {
@@ -35,57 +40,92 @@ namespace Calculator
         }
     }
 
+    /// <summary>
+    /// Math operation class.
+    /// </summary>
     static class MathOperations
     {
-        private static Exception DividedByZeroException = new Exception("Can`t divide by zero"); //Exception for cases where a user tries to divide by zero
-        private static Exception NegativeRootException = new Exception("Can`t calculate root"); //Exception for cases where a user tries to calculate root of negative value
+        //Exception for cases where a user tries to divide by zero.
+        private static Exception DividedByZeroException = new Exception("Can`t divide by zero");
+        //Exception for cases where a user tries to calculate root of negative value.
+        private static Exception NegativeRootException = new Exception("Can`t calculate root");
+
 
         /// <summary>
-        /// Method that calculates the sum of first and second digits
+        /// Calculates the sum of first and second digits.
         /// </summary>
-        /// <param name="digits">Digits for calculation</param>
-        /// <returns>Sum of digits</returns>
-        public static double Add(Digits digits)
+        /// <param name="a">First digit.</param>
+        /// <param name="b">Second digit.</param>
+        /// <returns>Sum of digits.</returns>
+        public static double Add(Double a, Double b)
         {
-            return digits.ValueOfA + digits.ValueOfB;
+            return a + b;
         }
 
         /// <summary>
-        /// Method that calculates the difference of first and second digits
+        /// Calculates the difference of first and second digits.
         /// </summary>
-        /// <param name="digits">Digits for calculation</param>
-        /// <returns>Difference of digits</returns>
-        public static double Substract(Digits digits)
+        /// <param name="a">First digit.</param>
+        /// <param name="b">Second digit.</param>
+        /// <returns>Difference of digits.</returns>
+        public static double Substract(Double a, Double b)
         {
-            return digits.ValueOfA- digits.ValueOfB;
+            return a - b;
         }
 
-        public static double Multiply(Digits digits)
+        /// <summary>
+        /// Calculates the product of first and second digits.
+        /// </summary>
+        /// <param name="a">First digit.</param>
+        /// <param name="b">Second digit.</param>
+        /// <returns>Product of digits.</returns>
+        public static double Multiply(Double a, Double b)
         {
-            return digits.ValueOfA * digits.ValueOfB;
+            return a * b;
         }
 
-        public static double Divide(Digits digits)
+        /// <summary>
+        /// Calculates the quotient of first and second digits.
+        /// </summary>
+        /// <param name="a">First digit.</param>
+        /// <param name="b">Second digit.</param>
+        /// <returns>Quotient of digits.</returns>
+        public static double Divide(Double a, Double b)
         {
-            if (Math.Abs(digits.ValueOfB) < 0.01) throw DividedByZeroException;
-            else return digits.ValueOfA / digits.ValueOfB;
+            if (Math.Abs(b) < 0.01) throw DividedByZeroException;
+            else return a / b;
         }
 
-        public static double SquareRoot(Digits digits)
+        /// <summary>
+        /// Calculates the square root of digit.
+        /// </summary>
+        /// <param name="a">Digit for calculation.</param>
+        /// <returns>Square root of digit.</returns>
+        public static double SquareRoot(Double a)
         {
-            if (digits.ValueOfA < 0) throw NegativeRootException;
-            else return Math.Sqrt(digits.ValueOfA);
+            if (a < 0) throw NegativeRootException;
+            else return Math.Sqrt(a);
         }
 
-        public static double Cos(Digits digits)
+        /// <summary>
+        /// Calculates the cosine of angle in radians.
+        /// </summary>
+        /// <param name="a">Angle in degrees</param>
+        /// <returns>Cosine of 'a' degrees in radians</returns>
+        public static double Cos(Double a)
         {
-            return Math.Cos(digits.ValueOfA * Math.PI / 180);
+            return Math.Cos(a * Math.PI / 180);
         }
 
-        public static double OneDividedBy(Digits digits)
+        /// <summary>
+        /// Calculates 1 / 'a'
+        /// </summary>
+        /// <param name="a">Divisor</param>
+        /// <returns>1 / 'a'</returns>
+        public static double OneDividedBy(Double a)
         {
-            if (Math.Abs(digits.ValueOfA) < 0.01) throw DividedByZeroException;
-            else return 1 / digits.ValueOfA;
+            if (Math.Abs(a) < 0.01) throw DividedByZeroException;
+            else return 1 / a;
         }
     }
 }
