@@ -12,7 +12,7 @@ namespace Calculator
         Digits digits = new Digits();
 
         /* Number of operation
-         * 0 - None 
+         * 0 - Default(none) 
          * Binary operations:
          * 1 - Add 
          * 2 - Substract
@@ -30,9 +30,6 @@ namespace Calculator
          * "-" - Negative
          */
         String sign = "";
-
-        // Variable for saving operation results.
-        Double res = 0;
 
         // Exception for numbers that are too big to display.
         Exception BigNumberException = new Exception("Too big number");
@@ -138,7 +135,9 @@ namespace Calculator
             // Change operation if the other one is already chosen and the second digit is not inputted.
             if (operation != 0 && MainTextBox.Text == "0")
             {
+                // Changing operation to current.
                 operation = op;
+                // Changing history to display current operation.
                 HistoryTextBox.Text = digits.ValueOfA.ToString() + " " + ((Button)sender).Text;
             }
             // Calculating previously chosen operation, and applying a new operation to calculation result.
@@ -146,16 +145,27 @@ namespace Calculator
             {
                 try
                 {
+                    // Second digit equals entered value.
                     digits.ValueOfB = Convert.ToDouble(MainTextBox.Text);
-                    Calculation();
+
+                    // Calculation.
+                    Double res = Calculation();
                     res = Math.Round(res, 1);
+
+                    // Checking for exception.
                     if (res.ToString().Length > 19) throw BigNumberException;
+                    
+                    // Changing operation to current.
                     operation = op;
+
+                    // Saving result.
                     digits.ValueOfA = res;
-                    res = 0;
+
+                    // Displaying history and result.
                     HistoryTextBox.Text = digits.ValueOfA.ToString() + " " + ((Button)sender).Text;
                     MainTextBox.Text = digits.ValueOfA.ToString();
                 }
+                // Handling exceptions.
                 catch (Exception ex)
                 {
                     DisableDigitAndOperations();
@@ -166,8 +176,13 @@ namespace Calculator
             // Applying operation.
             else
             {
+                // Changing operation.
                 operation = op;
+
+                // First digit equals entered value.
                 digits.ValueOfA = Convert.ToDouble(MainTextBox.Text);
+
+                // Displaying history and default value
                 HistoryTextBox.Text = MainTextBox.Text + " " + ((Button)sender).Text;
                 MainTextBox.Text = "0";
             }
@@ -180,50 +195,83 @@ namespace Calculator
         /// <param name="op">Operation number.</param>
         private void OneDigitOperations(object sender, int op)
         {
+            Double res;
             try
             {
                 // Calculating previously chosen operation, and applying a new operation to calculation result.
                 if (operation != 0 && MainTextBox.Text != "0")
                 {
+                    // Previous operation.
+                    // Second digit equals entered value.
                     digits.ValueOfB = Convert.ToDouble(MainTextBox.Text);
-                    Calculation();
+                    
+                    // Calculating previous operation.
+                    res = Calculation();
                     res = Math.Round(res, 1);
+
+                    // Checking for exception.
                     if (res.ToString().Length > 19) throw BigNumberException;
 
+                    // Current operation.
+                    // Changing operation to current.
                     operation = op;
+
+                    // First digit equals result of previous operation.
                     digits.ValueOfA = res;
 
+                    // Different output for 1/x operation.
                     if (operation == 7) HistoryTextBox.Text = ((Button)sender).Text.Substring(0, 2) + digits.ValueOfA.ToString();
-
+                    // Standart output for unary operation.
                     else HistoryTextBox.Text = ((Button)sender).Text + digits.ValueOfA.ToString();
 
-                    Calculation();
+                    // Calculating current operation.
+                    res = Calculation();
                     res = Math.Round(res, 1);
+                    
+                    // Checking for exception.
                     if (res.ToString().Length > 19) throw BigNumberException;
+                    
+                    // Saving result.
                     digits.ValueOfA = res;
-                    res = 0;
+
+                    // Setting default operation value.
                     operation = 0;
+
+                    // Displaying result.
                     MainTextBox.Text = digits.ValueOfA.ToString();
                 }
                 // Applying operation.
                 else
                 {
+                    // Changing operation.
                     operation = op;
+
+                    // First digit equals entered value.
                     digits.ValueOfA = Convert.ToDouble(MainTextBox.Text);
 
-                    if (operation == 7) HistoryTextBox.Text = ((Button)sender).Text.Substring(0, 2) + MainTextBox.Text;
+                    // Different output for 1/x operation.
+                    if (operation == 7) HistoryTextBox.Text = ((Button)sender).Text.Substring(0, 2) + digits.ValueOfA.ToString();
+                    // Standart output for unary operation.
+                    else HistoryTextBox.Text = ((Button)sender).Text + digits.ValueOfA.ToString();
 
-                    else HistoryTextBox.Text = ((Button)sender).Text + MainTextBox.Text;
-
-                    Calculation();
+                    // Calculation.
+                    res = Calculation();
                     res = Math.Round(res, 1);
+
+                    // Checking for exception.
                     if (res.ToString().Length > 19) throw BigNumberException;
+
+                    // Saving result.
                     digits.ValueOfA = res;
-                    res = 0;
+
+                    // Setting default operation value.
                     operation = 0;
+
+                    // Displaying result.
                     MainTextBox.Text = digits.ValueOfA.ToString();
                 }
             }
+            // Handling exceptions
             catch (Exception ex)
             {
                 DisableDigitAndOperations();
@@ -235,31 +283,25 @@ namespace Calculator
         /// <summary>
         /// Operation handler.
         /// </summary>
-        private void Calculation()
+        /// <returns>Calculated value</returns>
+        private double Calculation()
         {
             switch (operation)
             {
                 case 1:
-                    res = MathOperations.Add(digits.ValueOfA, digits.ValueOfB);
-                    break;
+                    return MathOperations.Add(digits.ValueOfA, digits.ValueOfB);
                 case 2:
-                    res = MathOperations.Substract(digits.ValueOfA, digits.ValueOfB);
-                    break;
+                    return MathOperations.Substract(digits.ValueOfA, digits.ValueOfB);
                 case 3:
-                    res = MathOperations.Multiply(digits.ValueOfA, digits.ValueOfB);
-                    break;
+                    return MathOperations.Multiply(digits.ValueOfA, digits.ValueOfB);
                 case 4:
-                    res = MathOperations.Divide(digits.ValueOfA, digits.ValueOfB);
-                    break;
+                    return MathOperations.Divide(digits.ValueOfA, digits.ValueOfB);
                 case 5:
-                    res = MathOperations.SquareRoot(digits.ValueOfA);
-                    break;
+                    return MathOperations.SquareRoot(digits.ValueOfA);
                 case 6:
-                    res = MathOperations.Cos(digits.ValueOfA);
-                    break;
+                    return MathOperations.Cos(digits.ValueOfA);
                 case 7:
-                    res = MathOperations.OneDividedBy(digits.ValueOfA);
-                    break;
+                    return MathOperations.OneDividedBy(digits.ValueOfA);
                 default:
                     throw NoOperationException;
             }
@@ -365,24 +407,37 @@ namespace Calculator
             OneDigitOperations(sender, op: 7);
         }
 
+        /// <summary>
+        /// Equal operation.
+        /// </summary>
+        /// <param name="sender">Equal button.</param>
+        /// <param name="e">Button click.</param>
         private void EqualButton_Click(object sender, EventArgs e)
         {
+            // No operation chosen.
             if (operation == 0)
                 HistoryTextBox.Text = MainTextBox.Text + " " + EqualButton.Text;
-
-            else if (res == 0)
+            // Operation chosen.
+            else
             {
                 digits.ValueOfB = Convert.ToDouble(MainTextBox.Text);
                 try
                 {
-                    Calculation();
+                    // Calculation.
+                    Double res = Calculation();
                     res = Math.Round(res, 1);
+
+                    // Checking for exception.
                     if (res.ToString().Length > 19) throw BigNumberException;
+
+                    // Setting default operation value.
                     operation = 0;
+
+                    // Displaying history and result.
                     HistoryTextBox.Text += " " + digits.ValueOfB.ToString() + " " + EqualButton.Text;
                     MainTextBox.Text = res.ToString();
-                    res = 0;
                 }
+                // Handling exceptions.
                 catch (Exception ex)
                 {
                     DisableDigitAndOperations();
@@ -415,7 +470,6 @@ namespace Calculator
             HistoryTextBox.Text = "";
             digits.Clear();
             operation = 0;
-            res = 0;
         }
 
         /// <summary>
