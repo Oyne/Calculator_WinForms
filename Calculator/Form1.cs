@@ -4,32 +4,52 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using Operations;
+using System.Security.Policy;
 
 namespace Calculator
 {
     public partial class Calculator : Form
     {
-        // Instanse of Digits class, for usin it instead of two variables.
+        /// <summary>
+        /// Max positive value that user can input.
+        /// </summary>
+        const double MaxPositive = 5000000;
+        /// <summary>
+        /// Min negative value that user can input.
+        /// </summary>
+        const double MinNegative = -3000000;
+
+        /// <summary>
+        /// Instanse of Digits class, for usin it instead of two variables.
+        /// </summary>
+        /// 
         Digits digits = new Digits();
+        
+        /// <summary>
+        /// Enum for operations.
+        /// </summary>
+        enum OperationNumber
+        {
+            NoOperation,
+            // Binary operations:
+            Add,
+            Subtract,
+            Multiply,
+            Divide,
+            // Unary operations:
+            SquareRoot,
+            Cos,
+            OneDividedBy
+        }
 
-        /* Number of operation
-         * 0 - Default(none) 
-         * Binary operations:
-         * 1 - Add 
-         * 2 - Substract
-         * 3 - Multiply
-         * 4 - Divide
-         * Unary operations:
-         * 5 - Square root
-         * 6 - Cos
-         * 7 - One divided by
-         */
-        int operation = 0;
+        /// <summary>
+        /// Number of operation.
+        /// </summary>
+        OperationNumber operation = OperationNumber.NoOperation;
 
-        /* Sign
-         * "" - Positive
-         * "-" - Negative
-         */
+        /// <summary>
+        /// Sign variable.
+        /// </summary> 
         String sign = "";
 
         // Exception for numbers that are too big to display.
@@ -118,8 +138,8 @@ namespace Calculator
             if (MainTextBox.Text.Contains(",") && MainTextBox.Text.IndexOf(",") == MainTextBox.TextLength - 1)
                 MainTextBox.Text = MainTextBox.Text + ((Button)sender).Text;
             // Adding digit if final value is in limits.
-            else if (!MainTextBox.Text.Contains(",") && (MainTextBox.Text != "0" && sign == "" && tmpValue < 5000000
-                        || MainTextBox.Text != "0" && sign == "-" && tmpValue > -3000000))
+            else if (!MainTextBox.Text.Contains(",") && (MainTextBox.Text != "0" && sign == "" && tmpValue < MaxPositive
+                        || MainTextBox.Text != "0" && sign == "-" && tmpValue > MinNegative))
                 MainTextBox.Text = MainTextBox.Text + ((Button)sender).Text;
             // Changing default value to digit
             else if (MainTextBox.Text == "0")
@@ -131,7 +151,7 @@ namespace Calculator
         /// </summary>
         /// <param name="sender">Operation button.</param>
         /// <param name="op">Operation number.</param>
-        private void TwoDigitOperations(object sender, int op)
+        private void TwoDigitOperations(object sender, OperationNumber op)
         {
             // Change operation if the other one is already chosen and the second digit is not inputted.
             if (operation != 0 && MainTextBox.Text == "0")
@@ -194,7 +214,7 @@ namespace Calculator
         /// </summary>
         /// <param name="sender">Operation button.</param>
         /// <param name="op">Operation number.</param>
-        private void OneDigitOperations(object sender, int op)
+        private void OneDigitOperations(object sender, OperationNumber op)
         {
             Double res;
             try
@@ -221,7 +241,7 @@ namespace Calculator
                     digits.ValueOfA = res;
 
                     // Different output for 1/x operation.
-                    if (operation == 7) HistoryTextBox.Text = ((Button)sender).Text.Substring(0, 2) + digits.ValueOfA.ToString();
+                    if (operation == OperationNumber.OneDividedBy) HistoryTextBox.Text = ((Button)sender).Text.Substring(0, 2) + digits.ValueOfA.ToString();
                     // Standart output for unary operation.
                     else HistoryTextBox.Text = ((Button)sender).Text + digits.ValueOfA.ToString();
 
@@ -251,7 +271,7 @@ namespace Calculator
                     digits.ValueOfA = Convert.ToDouble(MainTextBox.Text);
 
                     // Different output for 1/x operation.
-                    if (operation == 7) HistoryTextBox.Text = ((Button)sender).Text.Substring(0, 2) + digits.ValueOfA.ToString();
+                    if (operation == OperationNumber.OneDividedBy) HistoryTextBox.Text = ((Button)sender).Text.Substring(0, 2) + digits.ValueOfA.ToString();
                     // Standart output for unary operation.
                     else HistoryTextBox.Text = ((Button)sender).Text + digits.ValueOfA.ToString();
 
@@ -289,19 +309,19 @@ namespace Calculator
         {
             switch (operation)
             {
-                case 1:
+                case OperationNumber.Add:
                     return MathOperations.Add(digits.ValueOfA, digits.ValueOfB);
-                case 2:
+                case OperationNumber.Subtract:
                     return MathOperations.Substract(digits.ValueOfA, digits.ValueOfB);
-                case 3:
+                case OperationNumber.Multiply:
                     return MathOperations.Multiply(digits.ValueOfA, digits.ValueOfB);
-                case 4:
+                case OperationNumber.Divide:
                     return MathOperations.Divide(digits.ValueOfA, digits.ValueOfB);
-                case 5:
+                case OperationNumber.SquareRoot:
                     return MathOperations.SquareRoot(digits.ValueOfA);
-                case 6:
+                case OperationNumber.Cos:
                     return MathOperations.Cos(digits.ValueOfA);
-                case 7:
+                case OperationNumber.OneDividedBy:
                     return MathOperations.OneDividedBy(digits.ValueOfA);
                 default:
                     throw NoOperationException;
@@ -318,7 +338,7 @@ namespace Calculator
             Double tmpValue = Double.Parse(MainTextBox.Text);
 
             // Changig sign to "-" if value is in limits
-            if (sign == "" && tmpValue < 3000000) sign = "-";
+            if (sign == "" && tmpValue < -MinNegative) sign = "-";
             // Changing sign to "" 
             else sign = "";
 
@@ -345,7 +365,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void AddButton_Click(object sender, EventArgs e)
         {
-            TwoDigitOperations(sender, op: 1);
+            TwoDigitOperations(sender, op: OperationNumber.Add);
         }
 
         /// <summary>
@@ -355,7 +375,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void SubstractButton_Click(object sender, EventArgs e)
         {
-            TwoDigitOperations(sender, op: 2);
+            TwoDigitOperations(sender, op: OperationNumber.Subtract);
         }
 
         /// <summary>
@@ -365,7 +385,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void MultiplyButton_Click(object sender, EventArgs e)
         {
-            TwoDigitOperations(sender, op: 3);
+            TwoDigitOperations(sender, op: OperationNumber.Multiply);
         }
 
         /// <summary>
@@ -375,7 +395,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void DivideButton_Click(object sender, EventArgs e)
         {
-            TwoDigitOperations(sender, op: 4);
+            TwoDigitOperations(sender, op: OperationNumber.Divide);
         }
 
         /// <summary>
@@ -385,7 +405,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void SquareRootButton_Click(object sender, EventArgs e)
         {
-            OneDigitOperations(sender, op: 5);
+            OneDigitOperations(sender, op: OperationNumber.SquareRoot);
         }
 
         /// <summary>
@@ -395,7 +415,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void CosButton_Click(object sender, EventArgs e)
         {
-            OneDigitOperations(sender, op: 6);
+            OneDigitOperations(sender, op: OperationNumber.Cos);
         }
 
         /// <summary>
@@ -405,7 +425,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void OneDividedByButton_Click(object sender, EventArgs e)
         {
-            OneDigitOperations(sender, op: 7);
+            OneDigitOperations(sender, op: OperationNumber.OneDividedBy);
         }
 
         /// <summary>
