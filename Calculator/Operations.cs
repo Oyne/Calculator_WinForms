@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Calculator
+namespace Operations
 {
     /// <summary>
     /// Two digits class
     /// </summary>
-    class Digits
+    public class Digits
     {
         // Variable for first digit.
         private double _a = 0; 
@@ -43,7 +43,7 @@ namespace Calculator
     /// <summary>
     /// Math operation class.
     /// </summary>
-    static class MathOperations
+    public static class MathOperations
     {
         //Exception for cases where a user tries to divide by zero.
         private static Exception DividedByZeroException = new Exception("Can`t divide by zero");
@@ -92,7 +92,7 @@ namespace Calculator
         /// <returns>Quotient of digits.</returns>
         public static double Divide(Double a, Double b)
         {
-            if (Math.Abs(b) < 0.01) throw DividedByZeroException;
+            if (Math.Abs(b) < 0.00000001) throw DividedByZeroException;
             else return a / b;
         }
 
@@ -124,7 +124,7 @@ namespace Calculator
         /// <returns>1 / 'a'</returns>
         public static double OneDividedBy(Double a)
         {
-            if (Math.Abs(a) < 0.01) throw DividedByZeroException;
+            if (Math.Abs(a) < 0.00000001) throw DividedByZeroException;
             else return 1 / a;
         }
     }
