@@ -478,6 +478,7 @@ namespace Calculator
         /// <param name="e">Button click.</param>
         private void ClearEntryButton_Click(object sender, EventArgs e)
         {
+            sign = "";
             MainTextBox.Text = "0";
         }
 
@@ -489,6 +490,7 @@ namespace Calculator
         private void ClearButton_Click(object sender, EventArgs e)
         {
             EnableDigitAndOperations();
+            sign = "";
             MainTextBox.Text = "0";
             HistoryTextBox.Text = "";
             digits.Clear();
