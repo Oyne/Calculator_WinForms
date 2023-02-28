@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
 using Operations;
-using System.Security.Policy;
 
 namespace Calculator
 {
@@ -18,6 +15,11 @@ namespace Calculator
         /// Min negative value that user can input.
         /// </summary>
         const double MinNegative = -3000000;
+        
+        /// <summary>
+        /// Max lenght of number
+        /// </summary>
+        const int BigNumber = 19;
 
         /// <summary>
         /// Instanse of Digits class, for usin it instead of two variables.
@@ -154,7 +156,7 @@ namespace Calculator
         private void TwoDigitOperations(object sender, OperationNumber op)
         {
             // Change operation if the other one is already chosen and the second digit is not inputted.
-            if (operation != 0 && MainTextBox.Text == "0")
+            if (operation != OperationNumber.NoOperation && MainTextBox.Text == "0")
             {
                 // Changing operation to current.
                 operation = op;
@@ -162,7 +164,7 @@ namespace Calculator
                 HistoryTextBox.Text = digits.ValueOfA.ToString() + " " + ((Button)sender).Text;
             }
             // Calculating previously chosen operation, and applying a new operation to calculation result.
-            else if (operation != 0 && MainTextBox.Text != "0")
+            else if (operation != OperationNumber.NoOperation && MainTextBox.Text != "0")
             {
                 try
                 {
@@ -174,7 +176,7 @@ namespace Calculator
                     res = Math.Round(res, 1);
 
                     // Checking for exception.
-                    if (res.ToString().Length > 19) throw BigNumberException;
+                    if (res.ToString().Length > BigNumber) throw BigNumberException;
                     
                     // Changing operation to current.
                     operation = op;
@@ -220,7 +222,7 @@ namespace Calculator
             try
             {
                 // Calculating previously chosen operation, and applying a new operation to calculation result.
-                if (operation != 0 && MainTextBox.Text != "0")
+                if (operation != OperationNumber.NoOperation && MainTextBox.Text != "0")
                 {
                     // Previous operation.
                     // Second digit equals entered value.
@@ -231,7 +233,7 @@ namespace Calculator
                     res = Math.Round(res, 1);
 
                     // Checking for exception.
-                    if (res.ToString().Length > 19) throw BigNumberException;
+                    if (res.ToString().Length > BigNumber) throw BigNumberException;
 
                     // Current operation.
                     // Changing operation to current.
@@ -250,7 +252,7 @@ namespace Calculator
                     res = Math.Round(res, 1);
                     
                     // Checking for exception.
-                    if (res.ToString().Length > 19) throw BigNumberException;
+                    if (res.ToString().Length > BigNumber) throw BigNumberException;
                     
                     // Saving result.
                     digits.ValueOfA = res;
@@ -280,7 +282,7 @@ namespace Calculator
                     res = Math.Round(res, 1);
 
                     // Checking for exception.
-                    if (res.ToString().Length > 19) throw BigNumberException;
+                    if (res.ToString().Length > BigNumber) throw BigNumberException;
 
                     // Saving result.
                     digits.ValueOfA = res;
@@ -436,7 +438,7 @@ namespace Calculator
         private void EqualButton_Click(object sender, EventArgs e)
         {
             // No operation chosen.
-            if (operation == 0)
+            if (operation == OperationNumber.NoOperation)
                 HistoryTextBox.Text = MainTextBox.Text + " " + EqualButton.Text;
             // Operation chosen.
             else
@@ -449,7 +451,7 @@ namespace Calculator
                     res = Math.Round(res, 1);
 
                     // Checking for exception.
-                    if (res.ToString().Length > 19) throw BigNumberException;
+                    if (res.ToString().Length > BigNumber) throw BigNumberException;
 
                     // Setting default operation value.
                     operation = 0;
@@ -490,7 +492,7 @@ namespace Calculator
             MainTextBox.Text = "0";
             HistoryTextBox.Text = "";
             digits.Clear();
-            operation = 0;
+            operation = OperationNumber.NoOperation;
         }
 
         /// <summary>
